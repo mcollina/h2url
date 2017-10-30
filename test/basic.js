@@ -90,7 +90,7 @@ function doTests (server, scheme, test) {
       url,
       method: 'POST',
       body: new Readable({
-        read() {
+        read () {
           this.push('this is a post!')
           this.push(null)
         }

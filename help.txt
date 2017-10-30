@@ -1,0 +1,8 @@
+Usage: h2url [options..] URL
+
+Options:
+
+  -X/--method METHOD      the http method to use
+  -D/--data/--body BODY   the http body to send
+  -v/--verbose            show the headers
+  -h                      show this help
