@@ -9,7 +9,8 @@ const h2url = require('.')
 const url = 'https://www.google.com'
 
 async function concat () {
-  const res = await h2url.concat({ url })
+  const [err, res] = await to(h2url.concat({ url }))
+  ifError(err)
   console.log(res)
   // prints { headers, body }
 }
