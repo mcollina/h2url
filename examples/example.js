@@ -1,48 +1,12 @@
-# h2url
-
-Experimental http2 client for node and the CLI
-
-## Usage as CLI
-
-```
-$ npx h2url https://localhost:3001
-```
-
-or
-
-```
-$ npm i -g h2url
-$ h2url https://localhost:3001
-```
-
-### CLI options
-
-```
-Usage: h2url [options..] URL
-
-Options:
-
-  -X/--method METHOD      the http method to use
-  -D/--data/--body BODY   the http body to send
-  -v/--verbose            show the headers
-  -h                      show this help
-```
-
-## Usage as a module
-
-```
-$ npm i h2url
-```
-
-```js
 'use strict'
 
 const { to } = require('await-to-ts')
 const { ifError } = require('assert')
 const getStream = require('get-stream')
-const h2url = require('h2url')
 
-const url = 'https://localhost:3001'
+const h2url = require('.')
+
+const url = 'https://www.google.com'
 
 async function concat () {
   const res = await h2url.concat({ url })
@@ -68,9 +32,3 @@ async function streaming () {
 }
 
 streaming().catch(console.error.bind(console))
-
-```
-
-## License
-
-MIT
