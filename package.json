@@ -7,7 +7,7 @@
     "h2url": "h2url.js"
   },
   "scripts": {
-    "test": "tap test.js"
+    "test": "tap test/*.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,10 @@
     "tap": "^10.7.2"
   },
   "dependencies": {
-    "minimist": "^1.2.0"
+    "callback-stream": "^1.1.0",
+    "end-of-stream": "^1.4.0",
+    "get-stream": "^3.0.0",
+    "minimist": "^1.2.0",
+    "pump": "^1.0.2"
   }
 }
