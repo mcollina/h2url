@@ -4,5 +4,6 @@ Options:
 
   -X/--method METHOD      the http method to use
   -D/--data/--body BODY   the http body to send
+  -H/--headers            the http headers to send
   -v/--verbose            show the headers
   -h                      show this help
