@@ -1,35 +1,31 @@
 'use strict'
 
-const { to } = require('await-to-ts')
-const { ifError } = require('assert')
+require('make-promises-safe')
+const h2url = require('..')
 const getStream = require('get-stream')
 
-const h2url = require('.')
-
-const url = 'https://www.google.com'
+const url = 'https://google.com'
 
 async function concat () {
-  const [err, res] = await to(h2url.concat({ url }))
-  ifError(err)
+  const res = await h2url.concat({ url })
   console.log(res)
   // prints { headers, body }
 }
 
-concat().catch(console.error.bind(console))
+concat()
 
 async function streaming () {
-  const [err, res] = await to(h2url.request({
-    method: 'POST',
+  const res = await h2url.request({
+    method: 'GET',
     headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify('something') // string, buffer or readable stream
-  }))
+      // 'content-type': 'application/json'
+    }// ,
+    // body: JSON.stringify('something') // string, buffer or readable stream
+  })
 
-  ifError(err)
   console.log(res.headers)
   const body = getStream(res.stream)
   console.log(body)
 }
 
-streaming().catch(console.error.bind(console))
+streaming()

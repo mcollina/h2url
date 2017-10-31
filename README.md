@@ -37,12 +37,10 @@ $ npm i h2url
 ```js
 'use strict'
 
-const { to } = require('await-to-ts')
-const { ifError } = require('assert')
-const getStream = require('get-stream')
+require('make-promises-safe')
 const h2url = require('h2url')
-
 const url = 'https://localhost:3001'
+const getStream = require('get-stream')
 
 async function concat () {
   const res = await h2url.concat({ url })
@@ -50,25 +48,23 @@ async function concat () {
   // prints { headers, body }
 }
 
-concat().catch(console.error.bind(console))
+concat()
 
 async function streaming () {
-  const [err, res] = await to(h2url.request({
+  const res = await h2url.request({
     method: 'POST',
     headers: {
       'content-type': 'application/json'
     },
     body: JSON.stringify('something') // string, buffer or readable stream
-  }))
+  })
 
-  ifError(err)
   console.log(res.headers)
   const body = getStream(res.stream)
   console.log(body)
 }
 
-streaming().catch(console.error.bind(console))
-
+streaming()
 ```
 
 ## License
