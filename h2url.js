@@ -10,15 +10,18 @@ const path = require('path')
 const pump = require('pump')
 const ora = require('ora')
 const chalk = require('chalk')
+const tinysonic = require('tinysonic')
 
 async function start () {
   const args = minimist(process.argv.slice(1), {
     boolean: ['verbose', 'help'],
+    string: ['headers'],
     alias: {
       h: 'help',
       method: 'X',
       body: ['data', 'D'],
-      v: 'verbose'
+      v: 'verbose',
+      headers: 'H'
     },
     default: {
       method: 'GET'
@@ -33,6 +36,10 @@ async function start () {
       process.stdout
     )
     return
+  }
+
+  if (args.headers) {
+    args.headers = tinysonic(args.headers)
   }
 
   if (args.verbose) {
