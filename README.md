@@ -37,6 +37,7 @@ $ npm i h2url
 ```js
 'use strict'
 
+require('make-promises-safe')
 const h2url = require('h2url')
 const url = 'https://localhost:3001'
 const getStream = require('get-stream')

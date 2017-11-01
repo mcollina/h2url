@@ -7,6 +7,8 @@
     "h2url": "h2url.js"
   },
   "scripts": {
+    "example": "node examples/example.js",
+    "example:localhost": "node examples/example.localhost.js",
     "test": "standard | snazzy && tap test/*.js"
   },
   "repository": {
