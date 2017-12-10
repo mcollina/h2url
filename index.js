@@ -5,12 +5,15 @@ const { URL } = require('url')
 const assert = require('assert')
 const getStream = require('get-stream')
 const pump = require('pump')
+const { promisify } = require('util')
 const eos = require('end-of-stream')
+const eosP = promisify(eos)
 
 async function request (opts) {
   assert.equal(typeof opts, 'object')
 
   const url = new URL(opts.url)
+  const { store } = opts
 
   const client = http2.connect(url.origin, {
     rejectUnauthorized: false
@@ -23,17 +26,38 @@ async function request (opts) {
 
   const stream = client.request(req)
 
-  end(stream, opts.body)
+  const streams = new Set()
+  const wait = []
 
-  // Needed because of https://github.com/nodejs/node/issues/16617
-  // I would use unref() instead and let the user destroy the client
-  eos(stream, () => {
-    client.destroy()
+  client.on('stream', (pushStream, requestHeaders) => {
+    console.log('push received', requestHeaders[':path'])
+    streams.add(pushStream)
+    const dest = store.createWriteStream(requestHeaders[':path'])
+    pump(pushStream, dest)
+    wait.push(eosP(pushStream))
   })
+
+  stream.on('end', function () {
+    console.log('emitting end')
+  })
+
+  ed(stream, opts.body)
 
   const headers = await waitForHeaders(stream)
 
+  await Promise.all(wait)
+  console.log('all push streams received')
+
+  // Needed because of https://github.com/nodejs/node/issues/16617
+  // I would use unref() instead and let the user destroy the client
+  eos(stream, done)
+
   return { headers, stream }
+
+  function done () {
+    console.log('cleaning client')
+    client.destroy()
+  }
 }
 
 async function concat (opts) {
