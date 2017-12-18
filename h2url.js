@@ -1,4 +1,6 @@
-#! /usr/bin/env node --no-warnings
+#! /usr/bin/env node
+
+process.emitWarning = () => {}
 
 require('make-promises-safe')
 
