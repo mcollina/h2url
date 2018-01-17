@@ -5,16 +5,17 @@ const http2 = require('http2')
 const Store = require('abstract-blob-store')
 const h2url = require('..')
 const { promisify } = require('util')
-const pump = require('pump')
 const getStream = require('get-stream')
 
 test('receive server push', async (t) => {
   const server = http2.createServer()
 
   server.on('stream', (stream) => {
+    stream.session.unref()
+
     t.ok(stream.pushAllowed, 'push is allowed')
-    stream.pushStream({ ':path': '/file.js' }, (pushStream) => {
-      console.log('sending push')
+    stream.pushStream({ ':path': '/file.js' }, (err, pushStream) => {
+      t.error(err)
       pushStream.respond({ ':status': 200 })
       pushStream.end('console.log(\'hello\')')
     })

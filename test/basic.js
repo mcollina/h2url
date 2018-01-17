@@ -115,6 +115,10 @@ function doTests (server, scheme, test) {
 
     const body = await getStream(res.stream)
 
+    // destroy the session, it is left to the user
+    // to do this
+    res.session.destroy()
+
     t.equal(body, 'hello world')
   })
 

@@ -37,33 +37,25 @@ async function request (opts) {
     wait.push(eosP(pushStream))
   })
 
-  stream.on('end', function () {
-    console.log('emitting end')
-  })
-
-  ed(stream, opts.body)
+  end(stream, opts.body)
 
   const headers = await waitForHeaders(stream)
 
   await Promise.all(wait)
-  console.log('all push streams received')
 
-  // Needed because of https://github.com/nodejs/node/issues/16617
-  // I would use unref() instead and let the user destroy the client
-  eos(stream, done)
+  client.unref()
 
-  return { headers, stream }
-
-  function done () {
-    console.log('cleaning client')
-    client.destroy()
-  }
+  return { headers, stream, session: client }
 }
 
 async function concat (opts) {
   const res = await request(opts)
   const headers = res.headers
   const body = await getStream(res.stream)
+
+  // destroy the session
+  // ideally we would use a Pool
+  res.session.destroy()
 
   return { body, headers }
 }
