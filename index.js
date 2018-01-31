@@ -5,12 +5,15 @@ const { URL } = require('url')
 const assert = require('assert')
 const getStream = require('get-stream')
 const pump = require('pump')
+const { promisify } = require('util')
 const eos = require('end-of-stream')
+const eosP = promisify(eos)
 
 async function request (opts) {
   assert.equal(typeof opts, 'object')
 
   const url = new URL(opts.url)
+  const { store } = opts
 
   const client = http2.connect(url.origin, {
     rejectUnauthorized: false
@@ -23,23 +26,36 @@ async function request (opts) {
 
   const stream = client.request(req)
 
-  end(stream, opts.body)
+  const streams = new Set()
+  const wait = []
 
-  // Needed because of https://github.com/nodejs/node/issues/16617
-  // I would use unref() instead and let the user destroy the client
-  eos(stream, () => {
-    client.destroy()
+  client.on('stream', (pushStream, requestHeaders) => {
+    console.log('push received', requestHeaders[':path'])
+    streams.add(pushStream)
+    const dest = store.createWriteStream(requestHeaders[':path'])
+    pump(pushStream, dest)
+    wait.push(eosP(pushStream))
   })
+
+  end(stream, opts.body)
 
   const headers = await waitForHeaders(stream)
 
-  return { headers, stream }
+  await Promise.all(wait)
+
+  client.unref()
+
+  return { headers, stream, session: client }
 }
 
 async function concat (opts) {
   const res = await request(opts)
   const headers = res.headers
   const body = await getStream(res.stream)
+
+  // destroy the session
+  // ideally we would use a Pool
+  res.session.destroy()
 
   return { body, headers }
 }
