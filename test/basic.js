@@ -51,6 +51,20 @@ function doTests (server, scheme, test) {
     t.equal(res.body, 'hello world')
     t.equal(res.headers[':status'], 200)
   })
+  
+  test('query parameters', async (t) => {
+    server.once('stream', (stream, headers) => {
+      t.equal(headers[':method'], 'GET')
+      t.equal(headers[':path'], '/hello?foo=bar')
+      stream.respond({ ':status': 200 })
+      stream.end('hello world')
+    })
+
+    const res = await h2url.concat({ url: `${url}/hello?foo=bar` })
+
+    t.equal(res.body, 'hello world')
+    t.equal(res.headers[':status'], 200)
+  })
 
   test('concat post', async (t) => {
     server.once('stream', async (stream, headers) => {
