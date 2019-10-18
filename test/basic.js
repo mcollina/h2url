@@ -51,7 +51,7 @@ function doTests (server, scheme, test) {
     t.equal(res.body, 'hello world')
     t.equal(res.headers[':status'], 200)
   })
-  
+
   test('query parameters', async (t) => {
     server.once('stream', (stream, headers) => {
       t.equal(headers[':method'], 'GET')
@@ -61,7 +61,6 @@ function doTests (server, scheme, test) {
     })
 
     const res = await h2url.concat({ url: `${url}/hello?foo=bar` })
-
     t.equal(res.body, 'hello world')
     t.equal(res.headers[':status'], 200)
   })
