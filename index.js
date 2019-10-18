@@ -17,7 +17,7 @@ async function request (opts) {
   })
 
   const req = Object.assign({
-    ':path': url.pathname,
+    ':path': `${url.pathname}${url.search}`,
     ':method': opts.method || 'GET'
   }, opts.headers)
 
