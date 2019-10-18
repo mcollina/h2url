@@ -8,7 +8,7 @@ const pump = require('pump')
 const eos = require('end-of-stream')
 
 async function request (opts) {
-  assert.equal(typeof opts, 'object')
+  assert.strictEqual(typeof opts, 'object')
 
   const url = new URL(opts.url)
 
