@@ -1,6 +1,6 @@
 {
   "name": "h2url",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "experimental http2 client for Node.js and the CLI",
   "main": "index.js",
   "bin": {
